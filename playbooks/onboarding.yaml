@@ -1,0 +1,10 @@
+---
+- name: Onboard new organizations
+  hosts:
+    - "{{ aap_hostname | default('localhost') }}"
+  connection: local
+  run_once: true
+  gather_facts: false
+
+  roles:
+    - infra.aap_configuration.dispatch
