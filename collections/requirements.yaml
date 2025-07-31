@@ -1,0 +1,25 @@
+collections:
+
+  - name: ansible.controller
+    version: 4.6.16
+    source: https://console.redhat.com/api/automation-hub/
+
+  - name: ansible.platform
+    version: 2.5.20250702
+    source: https://console.redhat.com/api/automation-hub/
+
+  - name: ansible.hub
+    version: 1.0.0
+    source: https://console.redhat.com/api/automation-hub/
+
+  - name: ansible.eda
+    version: 2.8.2
+    source: https://console.redhat.com/api/automation-hub/
+
+  - name: infra.aap_configuration
+    version: 3.4.1
+    source: https://galaxy.ansible.com
+
+  - name: infra.aap_utilities
+    version: 2.7.0
+    source: https://galaxy.ansible.com
