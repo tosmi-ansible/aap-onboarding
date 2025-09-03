@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="OrchidESettings">
+    <option name="enabledCollections">
+      <map>
+        <entry key="ansible">
+          <value>
+            <OrchideSettingsCollectionsConfig>
+              <option name="collections">
+                <map>
+                  <entry key="builtin">
+                    <value>
+                      <OrchideSettingsCollection>
+                        <option name="collection" value="builtin" />
+                        <option name="options">
+                          <OrchideSettingsCollectionsConfigOptions>
+                            <option name="completionType" value="FQCN_ONLY" />
+                          </OrchideSettingsCollectionsConfigOptions>
+                        </option>
+                      </OrchideSettingsCollection>
+                    </value>
+                  </entry>
+                  <entry key="netcommon">
+                    <value>
+                      <OrchideSettingsCollection>
+                        <option name="collection" value="netcommon" />
+                        <option name="options">
+                          <OrchideSettingsCollectionsConfigOptions>
+                            <option name="completionType" value="FQCN_ONLY" />
+                          </OrchideSettingsCollectionsConfigOptions>
+                        </option>
+                      </OrchideSettingsCollection>
+                    </value>
+                  </entry>
+                  <entry key="posix">
+                    <value>
+                      <OrchideSettingsCollection>
+                        <option name="collection" value="posix" />
+                        <option name="options">
+                          <OrchideSettingsCollectionsConfigOptions>
+                            <option name="completionType" value="FQCN_ONLY" />
+                          </OrchideSettingsCollectionsConfigOptions>
+                        </option>
+                      </OrchideSettingsCollection>
+                    </value>
+                  </entry>
+                  <entry key="utils">
+                    <value>
+                      <OrchideSettingsCollection>
+                        <option name="collection" value="utils" />
+                        <option name="options">
+                          <OrchideSettingsCollectionsConfigOptions>
+                            <option name="completionType" value="FQCN_ONLY" />
+                          </OrchideSettingsCollectionsConfigOptions>
+                        </option>
+                      </OrchideSettingsCollection>
+                    </value>
+                  </entry>
+                  <entry key="windows">
+                    <value>
+                      <OrchideSettingsCollection>
+                        <option name="collection" value="windows" />
+                        <option name="options">
+                          <OrchideSettingsCollectionsConfigOptions>
+                            <option name="completionType" value="FQCN_ONLY" />
+                          </OrchideSettingsCollectionsConfigOptions>
+                        </option>
+                      </OrchideSettingsCollection>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+              <option name="enabled" value="YES" />
+              <option name="namespace" value="ansible" />
+            </OrchideSettingsCollectionsConfig>
+          </value>
+        </entry>
+        <entry key="community">
+          <value>
+            <OrchideSettingsCollectionsConfig>
+              <option name="collections">
+                <map>
+                  <entry key="dns">
+                    <value>
+                      <OrchideSettingsCollection>
+                        <option name="collection" value="dns" />
+                        <option name="options">
+                          <OrchideSettingsCollectionsConfigOptions>
+                            <option name="completionType" value="FQCN_ONLY" />
+                          </OrchideSettingsCollectionsConfigOptions>
+                        </option>
+                      </OrchideSettingsCollection>
+                    </value>
+                  </entry>
+                  <entry key="general">
+                    <value>
+                      <OrchideSettingsCollection>
+                        <option name="collection" value="general" />
+                        <option name="options">
+                          <OrchideSettingsCollectionsConfigOptions>
+                            <option name="completionType" value="FQCN_ONLY" />
+                          </OrchideSettingsCollectionsConfigOptions>
+                        </option>
+                      </OrchideSettingsCollection>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+              <option name="enabled" value="YES" />
+              <option name="namespace" value="community" />
+            </OrchideSettingsCollectionsConfig>
+          </value>
+        </entry>
+        <entry key="containers">
+          <value>
+            <OrchideSettingsCollectionsConfig>
+              <option name="collections">
+                <map>
+                  <entry key="podman">
+                    <value>
+                      <OrchideSettingsCollection>
+                        <option name="collection" value="podman" />
+                        <option name="options">
+                          <OrchideSettingsCollectionsConfigOptions>
+                            <option name="completionType" value="FQCN_ONLY" />
+                          </OrchideSettingsCollectionsConfigOptions>
+                        </option>
+                      </OrchideSettingsCollection>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+              <option name="enabled" value="YES" />
+              <option name="namespace" value="containers" />
+            </OrchideSettingsCollectionsConfig>
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="orchideAnsibleConfigFileLocation" value="/home/pinhead/.ansible.cfg" />
+  </component>
+</project>

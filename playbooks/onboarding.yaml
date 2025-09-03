@@ -1,10 +1,16 @@
 ---
 - name: Onboard new organizations
   hosts:
-    - "{{ aap_hostname | default('localhost') }}"
+    - "{{ aap | default('localhost') }}"
   connection: local
   run_once: true
   gather_facts: false
 
-  roles:
-    - infra.aap_configuration.dispatch
+  # tasks:
+  #   - redhat.satellite.architecture:
+  #       server_url: https://bla
+  #       name: test
+  #       ca_path: test
+
+  # roles:
+  #   - infra.aap_configuration.dispatch
