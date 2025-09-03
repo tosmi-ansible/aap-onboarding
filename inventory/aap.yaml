@@ -1,3 +1,6 @@
-all:
+hetzner:
   hosts:
     aap-aap.apps.hetzner.tntinfra.net:
+aws:
+  hosts:
+    aap.apps.hub.aws.tntinfra.net:
