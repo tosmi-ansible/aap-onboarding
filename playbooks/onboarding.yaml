@@ -6,11 +6,5 @@
   run_once: true
   gather_facts: false
 
-  # tasks:
-  #   - redhat.satellite.architecture:
-  #       server_url: https://bla
-  #       name: test
-  #       ca_path: test
-
-  # roles:
-  #   - infra.aap_configuration.dispatch
+  roles:
+    - infra.aap_configuration.dispatch

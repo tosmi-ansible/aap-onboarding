@@ -27,16 +27,18 @@ gateway_role_user_assignments:
     object_ids:
       - Tenant-1
 
-gateway_authenticator_maps:
-  - name: Tenant1-Organization-Administrators
-    authenticator: LDAP-Authenticator
-    revoke: true
-    map_type: organization
-    role: Organization Admin
-    triggers:
-      groups:
-        has_or:
-          - tenant1-org-admin
+# Skip this for now, we work with local users
+#
+# gateway_authenticator_maps:
+#   - name: Tenant1-Organization-Administrators
+#     authenticator: LDAP-Authenticator
+#     revoke: true
+#     map_type: organization
+#     role: Organization Admin
+#     triggers:
+#       groups:
+#         has_or:
+#           - tenant1-org-admin
 
 controller_credentials:
   - credential_type: Source Control
