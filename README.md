@@ -18,4 +18,4 @@ Each tenant will get
 
 ## Onboarding process overview
 
-![image](docs/images/onboarding_overview.png)
+![image](docs/images/onboarding_flow.png)
