@@ -118,14 +118,15 @@
         <option value="$PROJECT_DIR$/inventory" />
         <option value="$PROJECT_DIR$/../tenant1-org-config/inventory" />
         <option value="$PROJECT_DIR$/.direnv/flake-inputs/kl7mmn3x5jg42iaqbk9q4ipj6fkf29c0-source/inventory" />
+        <option value="$PROJECT_DIR$/../tenant1-example-project/inventory" />
       </list>
     </option>
-    <option name="orchideLocationsChanged" value="true" />
     <option name="orchidePlaybookLocations">
       <list>
         <option value="$PROJECT_DIR$/playbooks" />
         <option value="$PROJECT_DIR$/../tenant1-org-config/playbooks" />
         <option value="$PROJECT_DIR$/.direnv/flake-inputs/kl7mmn3x5jg42iaqbk9q4ipj6fkf29c0-source/playbooks" />
+        <option value="$PROJECT_DIR$/../tenant1-example-project/playbooks" />
       </list>
     </option>
     <option name="orchideRoleLocations">
