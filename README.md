@@ -12,9 +12,9 @@ Furthermore, each tenant will get a separate repository containing automation co
 Each tenant will get
 
 - [x] An organization within AAP
-- [x] A GIT project for storing AAP Settings for the tenant as CaC ([tenant1-org-config]()https://github.com/tosmi-ansible/tenant1-org-config)
+- [x] A GIT project for storing AAP Settings for the tenant as CaC ([tenant1-org-config](https://github.com/tosmi-ansible/tenant1-org-config)
 - [x] A GIT repository with an example playbook and inventory ([tenant1-example-project](https://github.com/tosmi-ansible/tenant1-example-project))
-- [x] A AAP project pointing to the CaC repository for the tenant
+- [x] An AAP project pointing to the CaC repository for the tenant
 - [x] A job template to trigger synchronization of AAP objects with the configuration stored in the CaC repository
 - [x] An example project, inventory and job template using the [example project](https://github.com/tosmi-ansible/tenant1-example-project)
 
@@ -31,6 +31,8 @@ The following diagram illustrates the onboarding process for new tenants:
   - [ ] Store Vault secret key for tenant as credential in tenant org
   - [ ] Create API token for tenant
   - [ ] Store API Token in tenant vault (org-config inventory)
+- [ ] Automation creation of tokens for GIT repos (GitLab / GitHub)
+- [ ] Clone a golden template example repository for a tenant
 
 ## Open Topics
 
