@@ -3,9 +3,9 @@ aap_organizations:
     description: Organization for Tenant-1
     galaxy_credentials:
       - Ansible Galaxy
-      - Red Hat Collections
-      - Red Hat Collections Certified
-      - Red Hat Collections Validated
+      - Private Hub Token
+      - Private Hub Token Certified
+      - Private Hub Token Validated
 
 aap_user_accounts:
   - name: tenant1_admin
@@ -44,36 +44,36 @@ gateway_role_user_assignments:
 
 controller_credentials:
   - credential_type: Source Control
-    name: 01 Tenant-1 GitLab Token
-    description: Token for accessing GitLab
+    name: 01 Tenant-1 Github Token
+    description: Token for accessing Github
     inputs:
-      username: gitlab
+      username: github
       password: password
     organization: Tenant-1
 
 controller_projects:
-  - name: 01 Tenant-1 Organization
+  - name: 01 Tenant-1 Organization Configuration
     scm_type: git
-    scm_url: https://gitlab.com/tosmi-ansible/tenant1-org-config.git
+    scm_url: https://github.com/tosmi-ansible/tenant1-org-config.git
     scm_branch: main
     scm_clean: true
-    credentials: 01 Tenant 1 GitLab Token
+    credentials: 01 Tenant 1 Github Token
     description: Tenant1 Organization Configuration
     organization: Tenant-1
     wait: true
     update_project: true
 
 controller_inventories:
-  - name: 01 Tenant-1 Org Configuration
+  - name: 01 Tenant-1 Organization Configuration
     organization: Tenant-1
 
 controller_templates:
   - name: 01 Tenant-1 Organization Configuration
     description: Apply Tenant 1 Organization configuration from GIT
     job_type: run
-    inventory: 01 Tenant-1 Org Configuration
+    inventory: 01 Tenant-1 Organization Configuration
     # credentials: admin@internal-RHVM-01
-    project: 01 Tenant-1 Organization
+    project: 01 Tenant-1 Organization Configuration
     playbook: playbooks/org-config.yaml
     verbosity: 2
     extra_vars:
