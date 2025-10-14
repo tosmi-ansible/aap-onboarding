@@ -12,9 +12,11 @@ Furthermore, each tenant will get a separate repository containing automation co
 Each tenant will get
 
 - [x] An organization within AAP
-- [x] A project pointing to the CaC repository for the tenant
+- [x] A GIT project for storing AAP Settings for the tenant as CaC ([tenant1-org-config]()https://github.com/tosmi-ansible/tenant1-org-config)
+- [x] A GIT repository with an example playbook and inventory ([tenant1-example-project](https://github.com/tosmi-ansible/tenant1-example-project))
+- [x] A AAP project pointing to the CaC repository for the tenant
 - [x] A job template to trigger synchronization of AAP objects with the configuration stored in the CaC repository
-- [x] An example repository containing an inventory and a simple playbook
+- [x] An example project, inventory and job template using the [example project](https://github.com/tosmi-ansible/tenant1-example-project)
 
 ## Onboarding process overview
 
@@ -33,7 +35,9 @@ The following diagram illustrates the onboarding process for new tenants:
 ## Open Topics
 
 - [ ] Create an execution environment with all collections required for onboarding and CaC
-
+- [ ] Tenant 1 has no inventory source configured, so the second example task using a variable fails
+- [ ] Tenant 1 currently uses the Hub tokens for community / certified and validated of the default organization. Not sure if this is a good idea.
+-
 ## Prerequisites
 
 This section lists prerequisites before the onboarding playbook is able to finish successfully.
@@ -49,9 +53,9 @@ The following collections must be available on the Private Automation Hub:
 - infra.aap_configuration (Ansible Galaxy)
 - infra.aap_utilities (Ansible Galaxy)
 
-### Hints for syning collections
+### Hints for syncing collections
 
-#### Depedency between _infra_ and ansible_ collections
+#### Dependency between _infra_ and ansible_ collections
 
 _infra.*_ collections have dependency on _ansilbe.*_ collections. those _ansible_ collections are only available via Red Hat Galaxy. If we pull the _infra_ collection from Galaxy and _ansible_ from Red Hat Galaxy, the hub community sync job fails because it cannot authenticate to the Red Hat Galaxy. One workaround was to disable dependency syncing in the _community_ remote.
 
