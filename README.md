@@ -30,6 +30,10 @@ The following diagram illustrates the onboarding process for new tenants:
   - [ ] Create API token for tenant
   - [ ] Store API Token in tenant vault (org-config inventory)
 
+## Open Topics
+
+- [ ] Create an execution environment with all collections required for onboarding and CaC
+
 ## Prerequisites
 
 This section lists prerequisites before the onboarding playbook is able to finish successfully.
