@@ -44,11 +44,21 @@ gateway_role_user_assignments:
 
 controller_credentials:
   - credential_type: Source Control
-    name: 01 Tenant-1 Github Token
-    description: Token for accessing Github
+    name: 01 Tenant-1 GitHub Token
+    description: Token for accessing GitHub
     inputs:
-      username: github
-      password: password
+      username: oauth
+      password: !vault |
+        $ANSIBLE_VAULT;1.1;AES256
+        65656535353762306432666165396530653662656438333563386631646635363863366439643938
+        6431386366366562383435646466363430383539653639630a343035303564323565356165336535
+        38666335633634363562353065323733633866656531346331336331313339616536373762313463
+        6133386338353937620a303131353666373833653032303936613538663138646664663935323930
+        39346562363366343739386334343837623363666662643563376136366465636138373966376337
+        64633461326538653034373439643533623634623065663633306132363335656163386663313132
+        64663965613062303630393562613636653733633266303263623037353537616239393265316632
+        32313339383562346663633330393034306165653863626535333937653931386466343637313031
+        3135
     organization: Tenant-1
 
 controller_projects:
@@ -57,7 +67,7 @@ controller_projects:
     scm_url: https://github.com/tosmi-ansible/tenant1-org-config.git
     scm_branch: main
     scm_clean: true
-    credentials: 01 Tenant 1 Github Token
+    credentials: 01 Tenant 1 GitHub Token
     description: Tenant1 Organization Configuration
     organization: Tenant-1
     wait: true
