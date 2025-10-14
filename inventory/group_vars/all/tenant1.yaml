@@ -4,6 +4,8 @@ aap_organizations:
     galaxy_credentials:
       - Ansible Galaxy
       - Red Hat Collections
+      - Red Hat Collections Certified
+      - Red Hat Collections Validated
 
 aap_user_accounts:
   - name: tenant1_admin
