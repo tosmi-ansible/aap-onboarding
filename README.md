@@ -22,6 +22,13 @@ The following diagram illustrates the onboarding process for new tenants:
 
 ![image](docs/images/onboarding_flow.png)
 
+## Manual steps to be automated
+
+- [ ] Create API Token for tenant
+  - [ ] Create Vault secret key for tenant
+  - [ ] Store Vault secret key for tenant as credential in tenant org
+  - [ ] Create API token for tenant
+  - [ ] Store API Token in tenant vault (org-config inventory)
 
 ## Prerequisites
 
