@@ -5,9 +5,14 @@ This repository implements an example onboarding for new tenants. A tenant is a 
 The goal is enabling tenants to work independently of the platform team operating Ansible Automation
 Platform.
 
-Onboarding of tenants provided by the platform team is done via Configuration as Code (CaC). This repository contains all relevant automation code.
+Onboarding of tenants by the platform team is done via Configuration as Code (CaC). This repository contains all relevant automation code. We leverage the excellent _infra.app_configuration_ collection for implementing CaC for Ansible Automation Platform. A single role _infra.app_configuratin.dispatch_ is used to create required configuration objects in AAP. The objects itself (projects, job templates, inventories) are stored in the inventories. This also enabled a strict separation between code and data.
 
-Furthermore, each tenant will get a separate repository containing automation code relevant to the tenant.
+_infra.app_configuration_ uses the standard AAP collections _ansible.platform_, _ansible.controller_, _ansible.hub_ and _ansible.eda_ in the background. We could have used those collections directly, but this has the following disadvantages:
+
+- We need to be careful separating automation code and data
+- We need to be careful with ordering required objects. For example, before a job template is created, the project needs to exist.
+
+The _dispatch_ role in the _infra.aap_configuration_ takes care of ordering, and by storing configuration data in the inventory we have a clear distinction between code and data.
 
 Each tenant will get
 
@@ -17,6 +22,8 @@ Each tenant will get
 - [x] An AAP project pointing to the CaC repository for the tenant
 - [x] A job template to trigger synchronization of AAP objects with the configuration stored in the CaC repository
 - [x] An example project, inventory and job template using the [example project](https://github.com/tosmi-ansible/tenant1-example-project)
+
+There are still some manual tasks required. Those tasks are documented in section [Manual steps to be automated](#manual-steps-to-be-automated). The ultimate goal is to automate these as well, but this is an ongoing project.
 
 ## Onboarding process overview
 
