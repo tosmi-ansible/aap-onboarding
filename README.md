@@ -7,7 +7,7 @@ Platform.
 
 Onboarding of tenants by the platform team is done via Configuration as Code (CaC). This repository contains all relevant automation code. We leverage the excellent _infra.app_configuration_ collection for implementing CaC for Ansible Automation Platform. A single role _infra.app_configuratin.dispatch_ is used to create required configuration objects in AAP. The objects itself (projects, job templates, inventories) are stored in the inventories. This also enabled a strict separation between code and data.
 
-_infra.app_configuration_ uses the standard AAP collections _ansible.platform_, _ansible.controller_, _ansible.hub_ and _ansible.eda_ in the background. We could have used those collections directly, but this has the following disadvantages:
+[_infra.app_configuration_](https://github.com/redhat-cop/infra.aap_configuration) uses the standard AAP collections _ansible.platform_, _ansible.controller_, _ansible.hub_ and _ansible.eda_ in the background. We could have used those collections directly, but this has the following disadvantages:
 
 - We need to be careful separating automation code and data
 - We need to be careful with ordering required objects. For example, before a job template is created, the project needs to exist.
@@ -46,7 +46,7 @@ The following diagram illustrates the onboarding process for new tenants:
 - [ ] Create an execution environment with all collections required for onboarding and CaC
 - [ ] Tenant 1 has no inventory source configured, so the second example task using a variable fails
 - [ ] Tenant 1 currently uses the Hub tokens for community / certified and validated of the default organization. Not sure if this is a good idea.
--
+
 ## Prerequisites
 
 This section lists prerequisites before the onboarding playbook is able to finish successfully.
