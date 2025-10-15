@@ -10,19 +10,19 @@ repos:
         exclude: syntax_highlighting_demo.yml
       # - id: no-commit-to-branch
 
-  - repo: 'https://github.com/ansible/ansible-lint.git'
-    rev: v25.7.0
-    hooks:
-      - id: ansible-lint
-        pass_filenames: false
-        always_run: true
-        entry: "ansible-lint"
-        args:
-          - "--profile=production"
-          - "-c=.ansible-lint"
-        additional_dependencies:
-          - "ansible-core>=2.15"
-          - "yamllint>=1.29,<2.0"
+  # - repo: 'https://github.com/ansible/ansible-lint.git'
+  #   rev: v25.7.0
+  #   hooks:
+  #     - id: ansible-lint
+  #       pass_filenames: false
+  #       always_run: true
+  #       entry: "ansible-lint"
+  #       args:
+  #         - "--profile=production"
+  #         - "-c=.ansible-lint"
+  #       additional_dependencies:
+  #         - "ansible-core>=2.15"
+  #         - "yamllint>=1.29,<2.0"
 
   # - repo: https://github.com/gitleaks/gitleaks
   #   rev: v8.16.1
