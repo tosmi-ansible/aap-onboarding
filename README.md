@@ -17,7 +17,7 @@ The _dispatch_ role in the _infra.aap_configuration_ takes care of ordering, and
 Each tenant will get
 
 - [x] An organization within AAP
-- [x] A GIT project for storing AAP Settings for the tenant as CaC ([tenant1-org-config](https://github.com/tosmi-ansible/tenant1-org-config)
+- [x] A GIT project for storing AAP Settings for the tenant as CaC ([tenant1-org-config](https://github.com/tosmi-ansible/tenant1-org-config))
 - [x] A GIT repository with an example playbook and inventory ([tenant1-example-project](https://github.com/tosmi-ansible/tenant1-example-project))
 - [x] An AAP project pointing to the CaC repository for the tenant
 - [x] A job template to trigger synchronization of AAP objects with the configuration stored in the CaC repository
