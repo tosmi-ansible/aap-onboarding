@@ -1,0 +1,1 @@
+app_organizations: "{{ app_organizations_tenant1 + app_oranizations_tenant2}}"

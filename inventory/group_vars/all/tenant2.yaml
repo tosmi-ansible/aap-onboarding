@@ -1,6 +1,6 @@
-aap_organizations_tenant1:
-  - name: Tenant-1
-    description: Organization for Tenant-1
+aap_organizations_tenant2:
+  - name: Tenant-2
+    description: Organization for Tenant-2
     galaxy_credentials:
       - Ansible Galaxy
       - Private Hub Token
@@ -8,8 +8,8 @@ aap_organizations_tenant1:
       - Private Hub Token Validated
 
 aap_user_accounts:
-  - name: tenant1_admin
-    username: tenant1_admin
+  - name: tenant2_admin
+    username: tenant2_admin
     password: !vault |
       $ANSIBLE_VAULT;1.1;AES256
       66376237633832363264666236646566303137323734653236636136323037306665353664613831
@@ -19,20 +19,20 @@ aap_user_accounts:
       38363163333832353934626365323733616236353862373031636530386139336564383062643763
       6464306133626364663332383964366530306133323534616433
     first_name: Administrator
-    last_name: Tenant1
-    organization: Tenant-1
+    last_name: Tenant-2
+    organization: Tenant-2
 
 gateway_role_user_assignments:
   - role_definition: Organization Admin
-    user: tenant1_admin
+    user: tenant2_admin
     # object_id: 2
     object_ids:
-      - Tenant-1
+      - Tenant-2
 
 # Skip this for now, we work with local users
 #
 # gateway_authenticator_maps:
-#   - name: Tenant1-Organization-Administrators
+#   - name: Tenant2-Organization-Administrators
 #     authenticator: LDAP-Authenticator
 #     revoke: true
 #     map_type: organization
@@ -40,11 +40,11 @@ gateway_role_user_assignments:
 #     triggers:
 #       groups:
 #         has_or:
-#           - tenant1-org-admin
+#           - tenant2-org-admin
 
 controller_credentials:
   - credential_type: Source Control
-    name: 01 Tenant-1 GitHub Token
+    name: 01 Tenant-2 GitHub Token
     description: Token for accessing GitHub
     inputs:
       username: oauth
@@ -59,31 +59,31 @@ controller_credentials:
         64663965613062303630393562613636653733633266303263623037353537616239393265316632
         32313339383562346663633330393034306165653863626535333937653931386466343637313031
         3135
-    organization: Tenant-1
+    organization: Tenant-2
 
 controller_projects:
-  - name: 01 Tenant-1 Organization Configuration
+  - name: 01 Tenant-2 Organization Configuration
     scm_type: git
-    scm_url: https://github.com/tosmi-ansible/tenant1-org-config.git
+    scm_url: https://github.com/tosmi-ansible/tenant2-org-config.git
     scm_branch: main
     scm_clean: true
     credentials: 01 Tenant 1 GitHub Token
-    description: Tenant1 Organization Configuration
-    organization: Tenant-1
+    description: Tenant2 Organization Configuration
+    organization: Tenant-2
     wait: true
     update_project: true
 
 controller_inventories:
-  - name: 01 Tenant-1 Organization Configuration
-    organization: Tenant-1
+  - name: 01 Tenant-2 Organization Configuration
+    organization: Tenant-2
 
 controller_templates:
-  - name: 01 Tenant-1 Organization Configuration
+  - name: 01 Tenant-2 Organization Configuration
     description: Apply Tenant 1 Organization configuration from GIT
     job_type: run
-    inventory: 01 Tenant-1 Organization Configuration
+    inventory: 01 Tenant-2 Organization Configuration
     # credentials: admin@internal-RHVM-01
-    project: 01 Tenant-1 Organization Configuration
+    project: 01 Tenant-2 Organization Configuration
     playbook: playbooks/org-config.yaml
     verbosity: 2
     extra_vars:
