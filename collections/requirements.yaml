@@ -17,7 +17,7 @@ collections:
     source: https://console.redhat.com/api/automation-hub/
 
   - name: infra.aap_configuration
-    version: 3.8.2
+    version: 3.9.1
     source: https://galaxy.ansible.com
 
   - name: infra.aap_utilities
