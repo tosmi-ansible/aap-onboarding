@@ -1,2 +1,4 @@
 /.direnv/
 /docs/images/.$onboarding_flow.drawio.bkp
+/ansible-navigator.log
+/ansible-creator.log
