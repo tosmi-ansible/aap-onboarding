@@ -1,0 +1,119 @@
+---
+- name: Starting onboarding
+  ansible.builtin.debug:
+    msg:
+      - "Starting onboarding for tenant {{ onboard_tenant }}"
+
+- name: Create required facts
+  ansible.builtin.set_fact:
+    onboard_admin_user: "admin-{{ onboard_tenant }}"
+
+- name: Create organization for tenant {{ onboard_tenant }}
+  ansible.platform.organization:
+    name: "{{ onboard_tenant }}"
+    aap_hostname: "{{ onboard_aap_hostname }}"
+    aap_token: "{{ onboard_app_token }}"
+    validate_certs: "{{ onboard_validate_certs }}"
+  tags:
+    - organization
+
+- name: Create a local admin user for organization "{{ onboard_tenant }}"
+  ansible.platform.user:
+    username: "{{ onboard_admin_user }}"
+    state: present
+    aap_hostname: "{{ onboard_aap_hostname }}"
+    aap_token: "{{ onboard_app_token }}"
+    validate_certs: "{{ onboard_validate_certs }}"
+  tags:
+    - organization
+
+- name: Assign user to organization "{{ onboard_tenant }}"
+  ansible.platform.role_user_assignment:
+    role_definition: Organization Admin
+    user: "{{ onboard_admin_user }}"
+    object_ids:
+      - "{{ onboard_tenant }}"
+    aap_hostname: "{{ onboard_aap_hostname }}"
+    aap_token: "{{ onboard_app_token }}"
+    validate_certs: "{{ onboard_validate_certs }}"
+  tags:
+    - organization
+
+- name: Check if org config repo exists
+  ansible.builtin.uri:
+    url: "https://api.github.com/repos/tosmi-ansible/{{ onboard_tenant }}-org-config"
+    method: GET
+    body_format: json
+    status_code:
+      - 200 # found
+      - 404 # Resource not found
+    headers:
+      Authorization: Bearer {{ github_admin_token }}
+      X-GitHub-Api-Version: "2022-11-28"
+    body:
+      organization: tosmi-ansible
+      name: tenant3-org-config
+      default_branch_only: true
+  register: onboard_repo_status
+  tags:
+    - github
+
+- name: Print the repo status
+  ansible.builtin.debug:
+    var: onboard_repo_status
+    verbosity: 2
+  tags:
+    - github
+
+# curl -L \
+#   -X POST \
+#   -H "Accept: application/vnd.github+json" \
+#   -H "Authorization: Bearer <YOUR-TOKEN>" \
+#   -H "X-GitHub-Api-Version: 2022-11-28" \
+#   https://api.github.com/repos/OWNER/REPO/forks \
+#   -d '{"organization":"octocat","name":"Hello-World","default_branch_only":true}'
+- name: Fork the template org config repo
+  when:
+    - onboard_repo_status.status == 404
+  ansible.builtin.uri:
+    url: https://api.github.com/repos/tosmi-ansible/template-org-config/forks
+    method: POST
+    body_format: json
+    status_code:
+      - 202
+    headers:
+      Authorization: Bearer {{ github_admin_token }}
+      X-GitHub-Api-Version: "2022-11-28"
+    body:
+      organization: tosmi-ansible
+      name: tenant3-org-config
+      default_branch_only: true
+  tags:
+    - github
+
+- name: Create a SCM credential to access repositories
+  ansible.controller.credential:
+    name: "00-Github-{{ onboard_tenant }}"
+    organization: "{{ onboard_tenant }}"
+    credential_type: 2
+    inputs:
+      password: "{{ github_read_token }}"
+      username: oauth
+    aap_hostname: "{{ onboard_aap_hostname }}"
+    aap_token: "{{ onboard_app_token }}"
+    validate_certs: "{{ onboard_validate_certs }}"
+  tags:
+    - org_config
+
+- name: Add org config repo to AAP for tenant {{ onboard_tenant }}
+  ansible.controller.project:
+    name: "00-{{ onboard_tenant }}-org-config"
+    organization: "{{ onboard_tenant }}"
+    scm_type: git
+    scm_url: "https://github.com/tosmi-ansible/{{ onboard_tenant }}-org-config.git"
+    scm_credential: "00-Github-{{ onboard_tenant }}"
+    aap_hostname: "{{ onboard_aap_hostname }}"
+    aap_token: "{{ onboard_app_token }}"
+    validate_certs: "{{ onboard_validate_certs }}"
+  tags:
+    - org_config
