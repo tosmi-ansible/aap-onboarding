@@ -1,0 +1,21 @@
+{
+    "containerUser": "root",
+    "customizations": {
+      "vscode": {
+        "extensions": ["redhat.ansible"]
+      }
+    },
+    "image": "registry.redhat.io/ansible-automation-platform-26/ansible-dev-tools-rhel9:latest",
+    "name": "ansible-dev-container-docker",
+    "runArgs": [
+      "--privileged",
+      "--device",
+      "/dev/fuse",
+      "--hostname=ansible-dev-container"
+    ],
+    "updateRemoteUserUID": true,
+    "mounts": [
+      "source=${localEnv:HOME},target=/host-home-folder,type=bind,consistency=cached"
+    ]
+}
+  

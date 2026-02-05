@@ -1,0 +1,41 @@
+{
+    "containerUser": "root",
+    "customizations": {
+      "vscode": {
+        "extensions": [
+            "redhat.ansible",
+            "saoudrizwan.claude-dev",
+            "lucax88x.codeacejumper",
+            "jborean.ansibug"
+        ]
+      }
+    },
+    "image": "quay.io/tosmi/ansible-dev-container",
+    "name": "ansible-dev-container-podman",
+    "mounts": [
+        "source=${localEnv:HOME}/.ssh,target=/home/runner/.ssh,type=bind",
+        "source=${localEnv:HOME}/.ansible.cfg,target=/home/runner/.ansible.cfg,type=bind",
+        "source=${localEnv:HOME}/.authinfo.gpg,target=/home/runner/.authinfo.gpg,type=bind",
+        "source=${localEnv:HOME}/bin/vault-lab.sh,target=/home/runner/bin/vault-lab.sh,type=bind",
+        "source=${localEnv:HOME}/git/ansible/aap-onboarding-inventory,target=/workspaces/aap-onboarding-inventory,type=bind",
+        "source=ansible-shellhistory,target=/commandhistory,type=volume"
+    ],
+    "runArgs": [
+      "--cap-add=CAP_MKNOD",
+      "--cap-add=NET_ADMIN",
+      "--cap-add=SYS_ADMIN",
+      "--cap-add=SYS_RESOURCE",
+      "--device",
+      "/dev/fuse",
+      "--security-opt",
+      "seccomp=unconfined",
+      "--security-opt",
+      "label=disable",
+      "--security-opt",
+      "apparmor=unconfined",
+      "--security-opt",
+      "unmask=/sys/fs/cgroup",
+      "--userns=host",
+      "--hostname=ansible-dev-container"
+    ]
+  }
