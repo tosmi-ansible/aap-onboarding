@@ -7,4 +7,9 @@
   gather_facts: false
 
   roles:
-    - infra.aap_configuration.dispatch
+    - role: onboard
+      vars:
+        onboard_tenant: tenant3
+        onboard_aap_hostname: "aap.apps.hub.aws.tntinfra.net"
+        onboard_validate_certs: false
+        onboard_app_token: "{{ aap_token }}"
