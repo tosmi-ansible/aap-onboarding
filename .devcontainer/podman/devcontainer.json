@@ -10,7 +10,7 @@
         ]
       }
     },
-    "image": "quay.io/tosmi/ansible-dev-container",
+    "image": "quay.io/tosmi/ansible-dev-container:v1.1",
     "name": "ansible-dev-container-podman",
     "mounts": [
         "source=${localEnv:HOME}/.ssh,target=/home/runner/.ssh,type=bind",
