@@ -12,4 +12,4 @@
         onboard_tenant: tenant3
         onboard_aap_hostname: "aap.apps.hub.aws.tntinfra.net"
         onboard_validate_certs: false
-        onboard_app_token: "{{ aap_token }}"
+        onboard_admin_token: "<insert token var that does not get overwritten...>"
