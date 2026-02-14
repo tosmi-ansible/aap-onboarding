@@ -17,7 +17,7 @@
         "source=${localEnv:HOME}/.ansible.cfg,target=/home/runner/.ansible.cfg,type=bind",
         "source=${localEnv:HOME}/.authinfo.gpg,target=/home/runner/.authinfo.gpg,type=bind",
         "source=${localEnv:HOME}/bin/vault-lab.sh,target=/home/runner/bin/vault-lab.sh,type=bind",
-        "source=${localEnv:HOME}/git/ansible/aap-onboarding-inventory,target=/workspaces/aap-onboarding-inventory,type=bind",
+        "source=${localEnv:HOME}/git/ansible/onboarding/aap-onboarding-inventory,target=/workspaces/aap-onboarding-inventory,type=bind",
         "source=ansible-shellhistory,target=/commandhistory,type=volume"
     ],
     "runArgs": [
