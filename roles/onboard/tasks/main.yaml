@@ -56,13 +56,8 @@
   tags:
     - organization
 
-- name: Print aap_token for debugging
-  ansible.builtin.debug:
-    var: onboard_admin_token
-  tags:
-    - debug
-
-
+# This overwrites the ansible_fact aap_token
+#
 - name: Create an authentication token for local user "{{ onboard_tenant_admin_user }}"
   ansible.platform.token:
     description: "{{ onboard_name }}"
@@ -72,15 +67,19 @@
     aap_password: "{{ onboard_tenant_admin_password }}"
     validate_certs: "{{ onboard_validate_certs }}"
 
-- name: Print aap_token for debugging
-  ansible.builtin.debug:
-    var: onboard_admin_token
-  tags:
-    - debug
+- name: Create a credential to access the AAP API for {{ onboard_tenant }}
+  ansible.controller.credential:
+    credential_type: AAP API Token
+    name: "00-{{ onboard_tenant }}-api-token"
+    description: AAP API token for tenant {{ onboard_tenant }}
+    inputs:
+      aap_api_token: "{{ aap_token.token }}"
+    organization: "{{ onboard_tenant }}"
+    aap_hostname: "{{ onboard_aap_hostname }}"
+    aap_token: "{{ onboard_admin_token }}"
+    validate_certs: "{{ onboard_validate_certs }}"
 
-- fail:
-
-- name: Assign local user to organization "{{ onboard_tenant }}"
+- name: Assign local user to organization {{ onboard_tenant }}
   ansible.platform.role_user_assignment:
     role_definition: Organization Admin
     user: "{{ onboard_tenant_admin_user }}"
@@ -139,14 +138,33 @@
       X-GitHub-Api-Version: "2022-11-28"
     body:
       organization: tosmi-ansible
-      name: tenant3-org-config
+      name: "{{ onboard_tenant }}-org-config"
+      default_branch_only: true
+  tags:
+    - github
+
+- name: Fork the template example repo for tenant {{ onboard_tenant }}
+  when:
+    - onboard_repo_status.status == 404
+  ansible.builtin.uri:
+    url: https://api.github.com/repos/tosmi-ansible/template-example-project/forks
+    method: POST
+    body_format: json
+    status_code:
+      - 202
+    headers:
+      Authorization: Bearer {{ github_admin_token }}
+      X-GitHub-Api-Version: "2022-11-28"
+    body:
+      organization: tosmi-ansible
+      name: "{{ onboard_tenant }}-example-project"
       default_branch_only: true
   tags:
     - github
 
 - name: Create a SCM credential to access repositories
   ansible.controller.credential:
-    name: "00-Github-{{ onboard_tenant }}"
+    name: "00-{{ onboard_tenant }}-github"
     organization: "{{ onboard_tenant }}"
     credential_type: 2
     inputs:
@@ -164,10 +182,11 @@
     organization: "{{ onboard_tenant }}"
     scm_type: git
     scm_url: "https://github.com/tosmi-ansible/{{ onboard_tenant }}-org-config.git"
-    scm_credential: "00-Github-{{ onboard_tenant }}"
+    scm_credential: "00-{{ onboard_tenant }}-github"
     aap_hostname: "{{ onboard_aap_hostname }}"
     aap_token: "{{ onboard_admin_token }}"
     validate_certs: "{{ onboard_validate_certs }}"
+    scm_update_on_launch: true
   tags:
     - org_config
 
@@ -180,6 +199,26 @@
     validate_certs: "{{ onboard_validate_certs }}"
   tags:
     - org_config
+    - onboard_inventory
+
+- name: Create inventory for tenant {{ onboard_tenant }}
+  ansible.controller.inventory_source:
+    name: "{{ onboard_name }}"
+    source: scm
+    source_project: "{{ onboard_name }}"
+    source_path: inventory/aap.yaml
+    inventory: "{{ onboard_name }}"
+    organization: "{{ onboard_tenant }}"
+    overwrite: true
+    overwrite_vars: true
+    update_on_launch: true
+    update_cache_timeout: 0
+    aap_hostname: "{{ onboard_aap_hostname }}"
+    aap_token: "{{ onboard_admin_token }}"
+    validate_certs: "{{ onboard_validate_certs }}"
+  tags:
+    - org_config
+    - onboard_inventory
 
 - name: Create org-config job template for tenant {{ onboard_tenant }}
   ansible.controller.job_template:
@@ -188,10 +227,15 @@
     inventory: "{{ onboard_name }}"
     project: "{{ onboard_name }}"
     playbook: "playbooks/org-config.yaml"
+    webhook_service: github
+    credentials:
+      - "00-{{ onboard_tenant }}-api-token"
+    extra_vars:
+      tenant_name: "{{ onboard_tenant }}"
+      github_credential: "00-{{ onboard_tenant }}-github"
     aap_hostname: "{{ onboard_aap_hostname }}"
     aap_token: "{{ onboard_admin_token }}"
     validate_certs: "{{ onboard_validate_certs }}"
-    webhook_service: github
   register: onboard_org_config_job_template
   no_log: false
   tags:
@@ -293,3 +337,6 @@
   register: onboard_repo_status
   tags:
     - onboard_webhook
+
+- name: Include example project tasks
+  ansible.builtin.include_tasks: example_project.yaml
