@@ -7,4 +7,6 @@
   gather_facts: false
 
   roles:
-    - infra.aap_configuration.dispatch
+    - role: infra.aap_configuration.dispatch
+      vars:
+        aap_token: "{{ aap_admin_token }}"
