@@ -1,5 +1,5 @@
 ---
-- name: Check if example project repo exists
+- name: Check if example project repo exists for tenant {{ onboard_tenant }}
   ansible.builtin.uri:
     url: "https://api.github.com/repos/tosmi-ansible/{{ onboard_tenant }}-example-project"
     method: GET
@@ -33,57 +33,5 @@
   tags:
     - github
 
-- name: Add example project repo to AAP for tenant {{ onboard_tenant }}
-  ansible.controller.project:
-    name: "00-{{ onboard_tenant }}-example-project"
-    organization: "{{ onboard_tenant }}"
-    scm_type: git
-    scm_url: "https://github.com/tosmi-ansible/{{ onboard_tenant }}-example-project.git"
-    scm_credential: "00-{{ onboard_tenant }}-github"
-    aap_hostname: "{{ onboard_aap_hostname }}"
-    aap_token: "{{ onboard_admin_token }}"
-    validate_certs: "{{ onboard_validate_certs }}"
-    scm_update_on_launch: true
-  tags:
-    - example_project
-
-- name: Create example inventory for tenant {{ onboard_tenant }}
-  ansible.controller.inventory:
-    name: "00-{{ onboard_tenant }}-example-inventory"
-    organization: "{{ onboard_tenant }}"
-    aap_hostname: "{{ onboard_aap_hostname }}"
-    aap_token: "{{ onboard_admin_token }}"
-    validate_certs: "{{ onboard_validate_certs }}"
-  tags:
-    - example_project
-
-- name: Create inventory source for example project
-  ansible.controller.inventory_source:
-    name: "00-{{ onboard_tenant }}-example-source"
-    inventory: "00-{{ onboard_tenant }}-example-inventory"
-    source: scm
-    source_project: "00-{{ onboard_tenant }}-example-project"
-    source_path: inventory/inventory.yaml
-    organization: "{{ onboard_tenant }}"
-    update_on_launch: true
-    overwrite: true
-    overwrite_vars: true
-    aap_hostname: "{{ onboard_aap_hostname }}"
-    aap_token: "{{ onboard_admin_token }}"
-    validate_certs: "{{ onboard_validate_certs }}"
-  tags:
-    - example_project
-
-- name: Create hello-world job template for tenant {{ onboard_tenant }}
-  ansible.controller.job_template:
-    name: "00-{{ onboard_tenant }}-hello-world"
-    job_type: run
-    organization: "{{ onboard_tenant }}"
-    inventory: "00-{{ onboard_tenant }}-example-inventory"
-    project: "00-{{ onboard_tenant }}-example-project"
-    playbook: "playbooks/hello-world.yaml"
-    aap_hostname: "{{ onboard_aap_hostname }}"
-    aap_token: "{{ onboard_admin_token }}"
-    validate_certs: "{{ onboard_validate_certs }}"
-  tags:
-    - example_project
+# the example project itself in AAP is create by the tenant org-config repo.
+# so do not create anything except the for of the template example project.
