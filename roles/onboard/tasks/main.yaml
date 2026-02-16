@@ -1,5 +1,5 @@
 ---
-- name: Starting onboarding
+- name: Starting onboarding for tenant {{ onboard_tenant }}
   ansible.builtin.debug:
     msg:
       - "Starting onboarding for tenant {{ onboard_tenant }}"
@@ -12,11 +12,16 @@
 # this re-uses the username from above
 # XXX: we use the username as the seed for password generation to ensure
 # that the password remains consistent across runs for the same tenant
-- name: Create password fact for user {{ onboard_admin_user }}
+- name: Create password fact for user {{ onboard_tenant_admin_user }}
   ansible.builtin.set_fact:
-    onboard_tenant_admin_password: "{{ lookup('ansible.builtin.password', '/dev/null', seed=onboard_tenant_admin_user) }}"
+    # we could generate a random password
+    #
+    # onboard_tenant_admin_password: "{{ lookup('ansible.builtin.password', '/dev/null', seed=onboard_tenant_admin_user) }}"
 
-- name: Print username and password for user {{ onboard_admin_user }}
+    # but for our lab env we use a static password for simplicity, which is stored in vault
+    onboard_tenant_admin_password: "{{ aap_tenant_admin_password }}"
+
+- name: Print username and password for user {{ onboard_tenant_admin_user }}
   ansible.builtin.debug:
     msg:
       - "onboard_tenant_admin_user: {{ onboard_tenant_admin_user }}"
@@ -45,7 +50,7 @@
   tags:
     - organization
 
-- name: Create a local user for organization "{{ onboard_tenant }}"
+- name: Create a local user for organization {{ onboard_tenant }}
   ansible.platform.user:
     username: "{{ onboard_tenant_admin_user }}"
     password: "{{ onboard_tenant_admin_password }}"
@@ -91,7 +96,7 @@
   tags:
     - organization
 
-- name: Check if org config repo exists
+- name: Check if org config repo exists for tenant {{ onboard_tenant }}
   ansible.builtin.uri:
     url: "https://api.github.com/repos/tosmi-ansible/{{ onboard_tenant }}-org-config"
     method: GET
@@ -110,7 +115,7 @@
   tags:
     - github
 
-- name: Print the repo status
+- name: Print the repo status for tenant {{ onboard_tenant }}
   ansible.builtin.debug:
     var: onboard_repo_status
     verbosity: 2
@@ -124,7 +129,7 @@
 #   -H "X-GitHub-Api-Version: 2022-11-28" \
 #   https://api.github.com/repos/OWNER/REPO/forks \
 #   -d '{"organization":"octocat","name":"Hello-World","default_branch_only":true}'
-- name: Fork the template org config repo
+- name: Fork the template org-config repo for tenant {{ onboard_tenant }}
   when:
     - onboard_repo_status.status == 404
   ansible.builtin.uri:
@@ -162,7 +167,7 @@
   tags:
     - github
 
-- name: Create a SCM credential to access repositories
+- name: Create a SCM credential to access repositories for tenant {{ onboard_tenant }}
   ansible.controller.credential:
     name: "00-{{ onboard_tenant }}-github"
     organization: "{{ onboard_tenant }}"
@@ -201,7 +206,7 @@
     - org_config
     - onboard_inventory
 
-- name: Create inventory for tenant {{ onboard_tenant }}
+- name: Create inventory source for tenant {{ onboard_tenant }}
   ansible.controller.inventory_source:
     name: "{{ onboard_name }}"
     source: scm
@@ -242,13 +247,13 @@
     - org_config
     - org_config_job_template
 
-- name: Print org config job template status
+- name: Print org config job template status for tenant {{ onboard_tenant }}
   ansible.builtin.debug:
     var: onboard_org_config_job_template
   tags:
     - org_config_job_template
 
-- name: Check if webhook exists
+- name: Check if webhook exists in the org-config repository for tenant {{ onboard_tenant }}
   ansible.builtin.uri:
     url: "https://api.github.com/repos/tosmi-ansible/{{ onboard_tenant }}-org-config/hooks"
     method: GET
@@ -264,19 +269,19 @@
   tags:
     - onboard_webhook
 
-- name: Print the webhook status
+- name: Print the webhook status for tenant {{ onboard_tenant }}
   ansible.builtin.debug:
     var: onboard_webhook_status.json
   tags:
     - onboard_webhook
 
-- name: Print aap_token for debugging
+- name: Print aap_token for debugging for tenant {{ onboard_tenant }}
   ansible.builtin.debug:
     var: onboard_admin_token
   tags:
     - debug
 
-- name: Get the job template details for the org config job template
+- name: Get the job template details for the org config job template for tenant {{ onboard_tenant }}
   ansible.builtin.set_fact:
     onboard_job_template_details: "{{ lookup('ansible.controller.controller_api',
       'job_templates',
@@ -287,13 +292,13 @@
   tags:
     - org_config_job_template
 
-- name: Print the job template details
+- name: Print the job template details for tenant {{ onboard_tenant }}
   ansible.builtin.debug:
     var: onboard_job_template_details
   tags:
     - org_config_job_template
 
-- name: Get the webhook key from the related field
+- name: Get the webhook key from the org-config job template for tenant {{ onboard_tenant }}
   ansible.builtin.set_fact:
     onboard_webhook_key: "{{ lookup('ansible.controller.controller_api',
       onboard_job_template_details.related.webhook_key,
@@ -302,14 +307,14 @@
       verify_ssl=onboard_validate_certs) }}"
   when: onboard_job_template_details.related is defined
 
-- name: Print the webhook key
+- name: Print the webhook key for the org-config job template for tenant {{ onboard_tenant }}
   ansible.builtin.debug:
     msg: "The webhook key for '{{ onboard_name }}' is: {{ onboard_webhook_key.webhook_key }}"
   when:
     - onboard_webhook_key is defined
     - onboard_webhook_key.webhook_key is defined
 
-- name: Create a webhook to trigger the org config template on push
+- name: Create a webhook to trigger the org-config template on push for tenant {{ onboard_tenant }}
   when:
     - onboard_webhook_status.status == 200
     - onboard_webhook_status.json | length == 0
@@ -338,5 +343,5 @@
   tags:
     - onboard_webhook
 
-- name: Include example project tasks
+- name: Include example project tasks for tenant {{ onboard_tenant }}
   ansible.builtin.include_tasks: example_project.yaml
