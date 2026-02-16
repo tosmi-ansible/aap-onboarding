@@ -2,28 +2,30 @@ collections:
 
   - name: ansible.controller
     version: 4.7.8
-    source: https://console.redhat.com/api/automation-hub/
+    source: https://aap.apps.hub.aws.tntinfra.net/api/galaxy/content/rh-certified/
+    # source: https://console.redhat.com/api/automation-hub/
 
   - name: ansible.platform
     version: 2.6.20251106
-    source: https://console.redhat.com/api/automation-hub/
+    source: https://aap.apps.hub.aws.tntinfra.net/api/galaxy/content/rh-certified/
 
   - name: ansible.hub
     version: 1.0.3
-    source: https://console.redhat.com/api/automation-hub/
+    source: https://aap.apps.hub.aws.tntinfra.net/api/galaxy/content/rh-certified/
+    # source: https://console.redhat.com/api/automation-hub/
 
   - name: ansible.eda
     version: 2.10.0
-    source: https://console.redhat.com/api/automation-hub/
+    source: https://aap.apps.hub.aws.tntinfra.net/api/galaxy/content/rh-certified/
 
   - name: infra.aap_configuration
     version: 4.2.1
-    source: https://console.redhat.com/api/automation-hub/
+    source: https://aap.apps.hub.aws.tntinfra.net/api/galaxy/content/validated/
 
   - name: infra.aap_utilities
     version: 2.8.0
-    source: https://console.redhat.com/api/automation-hub/
+    source: https://aap.apps.hub.aws.tntinfra.net/api/galaxy/content/validated/
 
   - name: infra.ah_configuration
     version: 2.1.0
-    source: https://console.redhat.com/api/automation-hub/
+    source: https://aap.apps.hub.aws.tntinfra.net/api/galaxy/content/validated/
