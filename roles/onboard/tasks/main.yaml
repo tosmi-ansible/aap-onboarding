@@ -84,6 +84,19 @@
     aap_token: "{{ onboard_admin_token }}"
     validate_certs: "{{ onboard_validate_certs }}"
 
+- name: Create a onboarding vault credential for {{ onboard_tenant }}
+  ansible.controller.credential:
+    credential_type: Vault
+    name: "00-{{ onboard_tenant }}-onboarding-vault"
+    description: Vault password id onboarding {{ onboard_tenant }}
+    inputs:
+      vault_id: onboarding
+      vault_password: "{{ onboarding_vault_password }}"
+    organization: "{{ onboard_tenant }}"
+    aap_hostname: "{{ onboard_aap_hostname }}"
+    aap_token: "{{ onboard_admin_token }}"
+    validate_certs: "{{ onboard_validate_certs }}"
+
 - name: Assign local user to organization {{ onboard_tenant }}
   ansible.platform.role_user_assignment:
     role_definition: Organization Admin
@@ -235,6 +248,7 @@
     webhook_service: github
     credentials:
       - "00-{{ onboard_tenant }}-api-token"
+      - "00-{{ onboard_tenant }}-onboarding-vault"
     extra_vars:
       tenant_name: "{{ onboard_tenant }}"
       github_credential: "00-{{ onboard_tenant }}-github"
