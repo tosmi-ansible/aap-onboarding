@@ -1,0 +1,55 @@
+---
+- name: Remove hello-world job template for tenant {{ offboard_tenant }}
+  ansible.controller.job_template:
+    name: "00-{{ offboard_tenant }}-example-job-template"
+    state: absent
+    aap_hostname: "{{ offboard_aap_hostname }}"
+    aap_token: "{{ offboard_admin_token }}"
+    validate_certs: "{{ offboard_validate_certs }}"
+  tags:
+    - example_project
+
+# - name: Remove inventory source for example project
+#   ansible.controller.inventory_source:
+#     name: "00-{{ offboard_tenant }}-example-source"
+#     inventory: "00-{{ offboard_tenant }}-example-inventory"
+#     state: absent
+#     aap_hostname: "{{ offboard_aap_hostname }}"
+#     aap_token: "{{ offboard_admin_token }}"
+#     validate_certs: "{{ offboard_validate_certs }}"
+#   tags:
+#     - example_project
+
+- name: Remove example inventory for tenant {{ offboard_tenant }}
+  ansible.controller.inventory:
+    name: "00-{{ offboard_tenant }}-example-inventory"
+    organization: "{{ offboard_tenant }}"
+    state: absent
+    aap_hostname: "{{ offboard_aap_hostname }}"
+    aap_token: "{{ offboard_admin_token }}"
+    validate_certs: "{{ offboard_validate_certs }}"
+  tags:
+    - example_project
+
+- name: Remove example project repo from AAP for tenant {{ offboard_tenant }}
+  ansible.controller.project:
+    name: "00-{{ offboard_tenant }}-example-project"
+    state: absent
+    aap_hostname: "{{ offboard_aap_hostname }}"
+    aap_token: "{{ offboard_admin_token }}"
+    validate_certs: "{{ offboard_validate_certs }}"
+  tags:
+    - example_project
+
+- name: Delete the example project repo for tenant {{ offboard_tenant }}
+  ansible.builtin.uri:
+    url: "https://api.github.com/repos/tosmi-ansible/{{ offboard_tenant }}-example-project"
+    method: DELETE
+    status_code:
+      - 204
+      - 404 # Already gone
+    headers:
+      Authorization: Bearer {{ github_admin_token }}
+      X-GitHub-Api-Version: "2022-11-28"
+  tags:
+    - github
