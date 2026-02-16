@@ -6,10 +6,16 @@
   run_once: true
   gather_facts: false
 
-  roles:
-    - role: onboard
+  tasks:
+    - name: Onboard tenants
+      ansible.builtin.include_role:
+        name: onboard
       vars:
-        onboard_tenant: tenant3
+        onboard_tenant: "{{ tenant }}"
         onboard_aap_hostname: "aap.apps.hub.aws.tntinfra.net"
         onboard_validate_certs: false
         onboard_admin_token: "{{ aap_admin_token }}"
+      loop:
+        - tenant3
+      loop_control:
+        loop_var: tenant
