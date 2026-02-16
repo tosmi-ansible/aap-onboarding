@@ -1,9 +1,13 @@
 collections:
 
+  - name: kubernetes.core
+    version: 6.3.0
+    source: https://aap.apps.hub.aws.tntinfra.net/api/galaxy/content/rh-certified/
+    # source: https://console.redhat.com/api/automation-hub/
+
   - name: ansible.controller
     version: 4.7.8
     source: https://aap.apps.hub.aws.tntinfra.net/api/galaxy/content/rh-certified/
-    # source: https://console.redhat.com/api/automation-hub/
 
   - name: ansible.platform
     version: 2.6.20251106
@@ -12,7 +16,6 @@ collections:
   - name: ansible.hub
     version: 1.0.3
     source: https://aap.apps.hub.aws.tntinfra.net/api/galaxy/content/rh-certified/
-    # source: https://console.redhat.com/api/automation-hub/
 
   - name: ansible.eda
     version: 2.10.0
