@@ -1,0 +1,20 @@
+---
+- name: Offboard organizations
+  hosts:
+    - "{{ aap | default('localhost') }}"
+  connection: local
+  gather_facts: false
+
+  tasks:
+    - name: offboard tenants
+      ansible.builtin.include_role:
+        name: offboard
+      vars:
+        offboard_tenant: "{{ tenant }}"
+        offboard_aap_hostname: "aap.apps.hub.aws.tntinfra.net"
+        offboard_validate_certs: false
+        offboard_admin_token: "{{ aap_admin_token }}"
+      loop:
+        - tenant3
+      loop_control:
+        loop_var: tenant
