@@ -1,0 +1,29 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "../aap-onboarding-inventory"
+		},
+		{
+			"path": "../tenant3-org-config"
+		},
+		{
+			"path": "../tenant3-example-project"
+		},
+		{
+			"path": "../template-org-config"
+		},
+		{
+			"path": "../template-example-project"
+		}
+	],
+	"settings": {
+		"files.associations": {
+			"*.yaml": "ansible",
+			"*.yml": "ansible"
+		},
+		"ansible.python.interpreterPath": "/bin/python3"
+	}
+}
