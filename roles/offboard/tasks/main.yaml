@@ -77,6 +77,24 @@
     aap_token: "{{ offboard_admin_token }}"
     validate_certs: "{{ offboard_validate_certs }}"
 
+- name: Remove K8s Credential
+  ansible.controller.credential:
+    name: "00-{{ offboard_tenant }}-k8s-token"
+    credential_type: "AAP API Token"
+    state: absent
+    aap_hostname: "{{ offboard_aap_hostname }}"
+    aap_token: "{{ offboard_admin_token }}"
+    validate_certs: "{{ offboard_validate_certs }}"
+
+- name: Remove vault credential
+  ansible.controller.credential:
+    name: "00-{{ offboard_tenant }}-onboarding-vault"
+    credential_type: "Vault"
+    state: absent
+    aap_hostname: "{{ offboard_aap_hostname }}"
+    aap_token: "{{ offboard_admin_token }}"
+    validate_certs: "{{ offboard_validate_certs }}"
+
 - name: Remove local user for organization "{{ offboard_tenant }}"
   ansible.platform.user:
     username: "{{ offboard_tenant_admin_user }}"
