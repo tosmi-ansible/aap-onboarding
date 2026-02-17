@@ -1,7 +1,0 @@
-- name: Test webhook
-  hosts: localhost
-  gather_facts: false
-  tasks:
-    - name: Print data received via webhook
-      ansible.builtin.debug:
-        msg: "Received data: {{ awx_webhook_payload }}"
