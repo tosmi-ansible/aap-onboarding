@@ -36,6 +36,10 @@
   tags:
     - organization
 
+- name: Include tasks to set OPA policy for organization {{ onboard_tenant }}
+  ansible.builtin.include_tasks:
+    file: opa_policy.yaml
+
 - name: Add hub credentials to organization for tenant {{ onboard_tenant }}
   ansible.controller.organization:
     name: "{{ onboard_tenant }}"
@@ -79,6 +83,18 @@
     description: AAP API token for tenant {{ onboard_tenant }}
     inputs:
       aap_api_token: "{{ aap_token.token }}"
+    organization: "{{ onboard_tenant }}"
+    aap_hostname: "{{ onboard_aap_hostname }}"
+    aap_token: "{{ onboard_admin_token }}"
+    validate_certs: "{{ onboard_validate_certs }}"
+
+- name: Create a credential to access the K8s to create development environments for {{ onboard_tenant }}
+  ansible.controller.credential:
+    credential_type: AAP API Token
+    name: "00-{{ onboard_tenant }}-k8s-token"
+    description: K8s token for creating development environments for tenant {{ onboard_tenant }}
+    inputs:
+      aap_api_token: "{{ k8s_api_key }}"
     organization: "{{ onboard_tenant }}"
     aap_hostname: "{{ onboard_aap_hostname }}"
     aap_token: "{{ onboard_admin_token }}"
