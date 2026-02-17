@@ -6,7 +6,7 @@
   gather_facts: false
 
   tasks:
-    - name: offboard tenants
+    - name: Offboard tenants
       ansible.builtin.include_role:
         name: offboard
       vars:
