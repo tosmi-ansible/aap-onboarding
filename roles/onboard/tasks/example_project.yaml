@@ -1,7 +1,12 @@
 ---
+- name: Set required facts for creating the example project for tenant {{ onboard_tenant }}
+  ansible.builtin.set_fact:
+    webhook_job_template_name: "00-{{ onboard_tenant }}-devenv-webhook"
+    example_repo_name: "{{ onboard_tenant }}-example-project"
+
 - name: Check if example project repo exists for tenant {{ onboard_tenant }}
   ansible.builtin.uri:
-    url: "https://api.github.com/repos/tosmi-ansible/{{ onboard_tenant }}-example-project"
+    url: "https://api.github.com/repos/tosmi-ansible/{{ example_repo_name }}"
     method: GET
     body_format: json
     status_code:
@@ -28,10 +33,111 @@
       X-GitHub-Api-Version: "2022-11-28"
     body:
       organization: tosmi-ansible
-      name: "{{ onboard_tenant }}-example-project"
+      name: "{{ example_repo_name }}"
       default_branch_only: true
   tags:
     - github
 
+###
 # the example project itself in AAP is create by the tenant org-config repo.
 # so do not create anything except the for of the template example project.
+#
+# XXX we revert the above statement. we want to enable a webhook on the example project
+# and this requires a github token which only the onboarding knows.
+# creating separate tokens for each tenant is currently not in scope. but needs to be fixed
+# i'm also not sure how to implement this with github...
+
+###
+# Webhook creation for the example project
+- name: Create the webhook job template for tenant {{ onboard_tenant }}
+  ansible.controller.job_template:
+    name: "{{ webhook_job_template_name }}"
+    organization: "{{ onboard_tenant }}"
+    description: Prints Hello World
+    job_type: run
+    inventory: "{{ onboard_name }}"
+    project: "{{ onboard_name }}"
+    playbook: playbooks/devenv.yaml
+    webhook_service: github
+    credentials:
+      - 00-{{ onboard_tenant }}-k8s-token
+    extra_vars:
+      tenant_name: "{{ onboard_tenant }}"
+    aap_hostname: "{{ onboard_aap_hostname }}"
+    aap_token: "{{ onboard_admin_token }}"
+    validate_certs: "{{ onboard_validate_certs }}"
+
+- name: Check if webhook exists in the example-project repository for tenant {{ onboard_tenant }}
+  ansible.builtin.uri:
+    url: "https://api.github.com/repos/tosmi-ansible/{{ example_repo_name }}/hooks"
+    method: GET
+    body_format: json
+    status_code:
+      - 200 # found
+      - 404 # not found
+    headers:
+      Accept: application/vnd.github+json
+      Authorization: Bearer {{ github_admin_token }}
+      X-GitHub-Api-Version: "2022-11-28"
+  register: example_webhook_status
+
+- name: Print the webhook status for example project
+  ansible.builtin.debug:
+    var: example_webhook_status.json
+
+- name: Get the webhook job template details or tenant {{ onboard_tenant }}
+  ansible.builtin.set_fact:
+    webhook_job_template_details: "{{ lookup('ansible.controller.controller_api',
+      'job_templates',
+      query_params={'name': webhook_job_template_name },
+      host=onboard_aap_hostname,
+      oauth_token=onboard_admin_token,
+      verify_ssl=onboard_validate_certs)  }}"
+
+- name: Print the webhook job template details for tenant {{ onboard_tenant }}
+  ansible.builtin.debug:
+    var: webhook_job_template_details
+
+- name: Get the webhook key from the webhook job template for tenant {{ onboard_tenant }}
+  ansible.builtin.set_fact:
+    example_webhook_key: "{{ lookup('ansible.controller.controller_api',
+      webhook_job_template_details.related.webhook_key,
+      host=onboard_aap_hostname,
+      oauth_token=onboard_admin_token,
+      verify_ssl=onboard_validate_certs) }}"
+  when:
+    - webhook_job_template_details.related is defined
+    - webhook_job_template_details.related.webhook_key is defined
+
+- name: Print the job template webhook key for tenant {{ onboard_tenant }}
+  ansible.builtin.debug:
+    msg: "The webhook key for '{{ onboard_tenant }}' is: {{ example_webhook_key.webhook_key }}"
+  when:
+    - example_webhook_key is defined
+    - example_webhook_key.webhook_key is defined
+
+- name: Create a webhook to trigger the webhook template on push for tenant {{ onboard_tenant }}
+  when:
+    - example_webhook_status.status == 200
+    - example_webhook_status.json | length == 0
+    - example_webhook_key is defined
+    - example_webhook_key.webhook_key is defined
+  ansible.builtin.uri:
+    url: "https://api.github.com/repos/tosmi-ansible/{{ example_repo_name }}/hooks"
+    method: POST
+    body_format: json
+    status_code:
+      - 201 # created
+    headers:
+      Authorization: Bearer {{ github_admin_token }}
+      X-GitHub-Api-Version: "2022-11-28"
+    body:
+      active: true
+      events:
+        - push
+      config:
+        url: "https://{{ onboard_aap_hostname }}{{ webhook_job_template_details.url }}github/"
+        content_type: json
+        secret: "{{ example_webhook_key.webhook_key }}"
+        insecure_ssl: "1" # 1 to disable ssl verification, 0 to enable ssl verification
+      organization: tosmi-ansible
