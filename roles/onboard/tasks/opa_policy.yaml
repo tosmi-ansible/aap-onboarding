@@ -1,0 +1,21 @@
+# curl -kv -H 'Content-Type: application/json' \
+#   -H 'Authorization: Bearer ...'
+#   -X PUT https://aap.apps.hub.aws.tntinfra.net/api/controller/v2/organizations/9/
+# -d '{"name": "tenant3","opa_query_path": "bla"}'
+
+# XXX: ansible.controller.organization does not support setting OPA policies.
+# So use the URI module for now.
+#
+- name: Add OPA policy to organization {{ onboard_tenant }}
+  ansible.builtin.uri:
+    url: https://aap.apps.hub.aws.tntinfra.net/api/controller/v2/organizations/{{ onboard_tenant }}/
+    method: PUT
+    body_format: json
+    status_code:
+      - 200 # found
+    headers:
+      Authorization: Bearer {{ aap_admin_token }}
+    body:
+      name: "{{ onboard_tenant }}"
+      opa_query_path: "policies/jt_naming_validation"
+    validate_certs: "{{ onboard_validate_certs }}"
