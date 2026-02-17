@@ -9,6 +9,17 @@
   tags:
     - example_project
 
+# Webhook creation for the example project
+- name: Remove the webhook job template for tenant {{ offboard_tenant }}
+  ansible.controller.job_template:
+    name: "00-{{ offboard_tenant }}-devenv-webhook"
+    organization: "{{ offboard_tenant }}"
+    state: absent
+    webhook_service: github
+    aap_hostname: "{{ offboard_aap_hostname }}"
+    aap_token: "{{ offboard_admin_token }}"
+    validate_certs: "{{ offboard_validate_certs }}"
+
 # - name: Remove inventory source for example project
 #   ansible.controller.inventory_source:
 #     name: "00-{{ offboard_tenant }}-example-source"
