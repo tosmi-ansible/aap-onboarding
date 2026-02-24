@@ -1,4 +1,6 @@
-# Ansible Tenant Onboarding
+![Ansible Automation Platform Logo](docs/images/Logo-Red_Hat-Ansible_Automation_Platform.jpeg)
+
+# Ansible Automation Platform Tenant Onboarding
 
 This repository implements an example onboarding process for new
 tenants to Ansible Automation Platform. A tenant is a user or a group
