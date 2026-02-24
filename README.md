@@ -1,29 +1,86 @@
 # Ansible Tenant Onboarding
 
-This repository implements an example onboarding for new tenants. A tenant is a user or a group of users that would like to deploy and use their automation code on Ansible Automation Platform (AAP).
+This repository implements an example onboarding process for new
+tenants to Ansible Automation Platform. A tenant is a user or a group
+of users that would like to deploy and use their automation code on
+Ansible Automation Platform (AAP).
 
-The goal is enabling tenants to work independently of the platform team operating Ansible Automation
-Platform.
+[!IMPORTANT]
+The goal is enabling tenants to work independently of the platform
+team operating Ansible Automation Platform.
 
-Onboarding of tenants by the platform team is done via Configuration as Code (CaC). This repository contains all relevant automation code. We leverage the excellent _infra.app_configuration_ collection for implementing CaC for Ansible Automation Platform. A single role _infra.app_configuratin.dispatch_ is used to create required configuration objects in AAP. The objects itself (projects, job templates, inventories) are stored in the inventories. This also enabled a strict separation between code and data.
+[!WARNING] The code in this repository is a proof of concept. It
+it's not considered production ready! You have been warned, this might
+eat your cat.
 
-[_infra.app_configuration_](https://github.com/redhat-cop/infra.aap_configuration) uses the standard AAP collections _ansible.platform_, _ansible.controller_, _ansible.hub_ and _ansible.eda_ in the background. We could have used those collections directly, but this has the following disadvantages:
+## Implementation options
+
+Onboarding of tenants by the platform team is done via Configuration
+as Code (CaC).
+
+We cover two options in this repository:
+
+- Using [_infra.app_configuration_](https://github.com/redhat-cop/infra.aap_configuration)
+- Creating a [custom role](roles/onboard) for onboarding
+
+### Using [_infra.app_configuration_](https://github.com/redhat-cop/infra.aap_configuration)
+
+Our first approach was to leverage the excellent
+[_infra.app_configuration_](https://github.com/redhat-cop/infra.aap_configuration)
+role for onboarding. This allows a clean separation of configuration
+code from configuration data.
+
+The problem with this approach is that it results in complex variable
+merging, which we do not consider practical.
+
+The code for this implementation is in
+[onboarding-dispatch.yaml](playbooks/onboarding-dispatch.yaml) and the
+inventory. The inventory is currently a private repository. We need to
+clean this repo up and will change to public after the cleanup.
+
+[_infra.app_configuration_](https://github.com/redhat-cop/infra.aap_configuration)
+uses the standard AAP collections _ansible.platform_,
+_ansible.controller_, _ansible.hub_ and _ansible.eda_ in the
+background. We could have used those collections directly, but this
+has the following disadvantages:
 
 - We need to be careful separating automation code and data
-- We need to be careful with ordering required objects. For example, before a job template is created, the project needs to exist.
+- We need to be careful with ordering required objects. For example,
+  before a job template is created, the project needs to exist.
 
-The _dispatch_ role in the _infra.aap_configuration_ takes care of ordering, and by storing configuration data in the inventory we have a clear distinction between code and data.
+The _dispatch_ role in the _infra.aap_configuration_ takes care of
+ordering, and by storing configuration data in the inventory we have a
+clear distinction between code and data.
+
+### Using a custom role for onboarding
+
+Because we did not want to mess with complex variable merging, we
+decided to implement a custom role for onboarding. The roles is
+located in [roles/onboard](roles/onboard).
+
+[roles/onboard/main.yaml](roles/onboard/main.yaml) creates
+
+-
+
+
+## Onboarding process and required objects
 
 Each tenant will get
 
 - [x] An organization within AAP
-- [x] A GIT project for storing AAP Settings for the tenant as CaC ([tenant1-org-config](https://github.com/tosmi-ansible/tenant1-org-config))
-- [x] A GIT repository with an example playbook and inventory ([tenant1-example-project](https://github.com/tosmi-ansible/tenant1-example-project))
+- [x] A GIT clone of a repository for storing AAP Settings for the tenant as CaC ([template-org-config](https://github.com/tosmi-ansible/template-org-config))
+- [x] A GIT clone of a repository with an example playbook and inventory ([template-example-project](https://github.com/tosmi-ansible/template-example-project))
 - [x] An AAP project pointing to the CaC repository for the tenant
+- [x] An AAP project pointing to the example project repository for the tenant
 - [x] A job template to trigger synchronization of AAP objects with the configuration stored in the CaC repository
+- [x] The tenant CaC repository has also a webhook configured to trigger the job template above
 - [x] An example project, inventory and job template using the [example project](https://github.com/tosmi-ansible/tenant1-example-project)
+- [x] The example project has a webhook configured which creates a new test Virtual Machine on branch creation (see roles/onboard/tasks/example_project.yaml)
 
-There are still some manual tasks required. Those tasks are documented in section [Manual steps to be automated](#manual-steps-to-be-automated). The ultimate goal is to automate these as well, but this is an ongoing project.
+There are still some manual tasks required. Those tasks are documented
+in section [Manual steps to be
+automated](#manual-steps-to-be-automated). The ultimate goal is to
+automate these as well, but this is an ongoing project.
 
 ## Onboarding process overview
 
@@ -33,13 +90,7 @@ The following diagram illustrates the onboarding process for new tenants:
 
 ## Manual steps to be automated
 
-- [ ] Create API Token for tenant
-  - [ ] Create Vault secret key for tenant
-  - [ ] Store Vault secret key for tenant as credential in tenant org
-  - [ ] Create API token for tenant
-  - [ ] Store API Token in tenant vault (org-config inventory)
-- [ ] Automation creation of tokens for GIT repos (GitLab / GitHub)
-- [ ] Clone a golden template example repository for a tenant
+- [ ] Automate creation of tokens for GIT repos (GitLab / GitHub)
 
 ## Open Topics
 
