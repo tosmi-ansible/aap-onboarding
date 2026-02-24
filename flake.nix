@@ -21,7 +21,7 @@
             pkgs.pre-commit
             pkgs.gitleaks
             pkgs.yamllint
-
+            pkgs.pandoc
           ];
         };
       });
