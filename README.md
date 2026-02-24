@@ -9,7 +9,8 @@ Ansible Automation Platform (AAP).
 > The goal is enabling tenants to work independently of the platform
 > team operating Ansible Automation Platform.
 
-> [!WARNING] The code in this repository is a proof of concept. It
+> [!WARNING]
+> The code in this repository is a proof of concept. It
 > it's not considered production ready! You have been warned, this might
 > eat your cat.
 
@@ -54,14 +55,35 @@ clear distinction between code and data.
 
 ### Using a custom role for onboarding
 
+
 Because we did not want to mess with complex variable merging, we
 decided to implement a custom role for onboarding. The roles is
 located in [roles/onboard](roles/onboard).
 
-[roles/onboard/main.yaml](roles/onboard/main.yaml) creates
+[roles/onboard/main.yaml](roles/onboard/main.yaml) creates the main
+objects required for a tenant:
 
--
+- The organization
+- Assign credentials to acccess automation hub
+- Creating a local admin user for tokens
+- A authentication token and credential for the tenant admin user to deploy AAP configuration via CaC
+- A credential to access a OpenShift (Kubernetes) cluster for deployment of virtual machines
+- A vault credential for the tenant
+- A fork of the template CaC repository
+- A webhook on the CaC repository to deploy CaC code on a git push event
 
+The *main* role also includes task for the tenant example project, this role:
+
+- Forks the [template example project](https://github.com/tosmi-ansible/template-example-project)
+- Enables a webhook on the forked project
+
+This webhook triggers the
+[devenv.yaml](https://github.com/tosmi-ansible/template-org-config/blob/main/playbooks/devenv.yaml)
+playbook to deploy a virtual machine for testing new features.
+
+Furthermore there is
+[opa_policy.yaml](roles/onboard/tasks/opa_policy.yaml) to add a OPA
+policy to the organization.
 
 ## Onboarding process and required objects
 
@@ -73,9 +95,15 @@ Each tenant will get
 - [x] An AAP project pointing to the CaC repository for the tenant
 - [x] An AAP project pointing to the example project repository for the tenant
 - [x] A job template to trigger synchronization of AAP objects with the configuration stored in the CaC repository
-- [x] The tenant CaC repository has also a webhook configured to trigger the job template above
-- [x] An example project, inventory and job template using the [example project](https://github.com/tosmi-ansible/tenant1-example-project)
-- [x] The example project has a webhook configured which creates a new test Virtual Machine on branch creation (see roles/onboard/tasks/example_project.yaml)
+- [x] A job template using the [example project](https://github.com/tosmi-ansible/tenant1-example-project)
+- [x] A webhook configured on the tenant CaC repository to trigger updates on _git push_
+- [x] A webhook on the example project to deploy new test Virtual Machine on branch creation (see roles/onboard/tasks/example_project.yaml)
+- [x] A policy on the tenant organization to enforce nameing conventions on job templates (<id>-<tenant name>-<name of job template)
+
+The example project is a "golden" templates for tenants so they have
+an example on how to create their own automation using AAP. It also
+provides the option to deploy virtual machines for testing new
+features.
 
 There are still some manual tasks required. Those tasks are documented
 in section [Manual steps to be
