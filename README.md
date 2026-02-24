@@ -16,6 +16,46 @@ Ansible Automation Platform (AAP).
 > it's not considered production ready! You have been warned, this might
 > eat your cat.
 
+- [Onboarding process and required objects](https://github.com/tosmi-ansible/aap-onboarding?tab=readme-ov-file#onboarding-process-and-required-objects)
+- [Onboarding process overview](https://github.com/tosmi-ansible/aap-onboarding?tab=readme-ov-file#onboarding-process-overview)
+- [Implementation options](https://github.com/tosmi-ansible/aap-onboarding?tab=readme-ov-file#implementation-options)
+  - [Using infra.aap_configuration.dispatch role](https://github.com/tosmi-ansible/aap-onboarding?tab=readme-ov-file#using-infraapp_configuration)
+  - [Using a custom role](https://github.com/tosmi-ansible/aap-onboarding?tab=readme-ov-file#using-a-custom-role-for-onboarding)
+- [Manual steps to be automated](https://github.com/tosmi-ansible/aap-onboarding?tab=readme-ov-file#manual-steps-to-be-automated)
+- [Open Topics](https://github.com/tosmi-ansible/aap-onboarding?tab=readme-ov-file#open-topics)
+- [Prerequisites](https://github.com/tosmi-ansible/aap-onboarding?tab=readme-ov-file#open-topics)
+
+## Onboarding process and required objects
+
+Each tenant will get
+
+- [x] An organization within AAP
+- [x] A GIT clone of a repository for storing AAP Settings for the tenant as CaC ([template-org-config](https://github.com/tosmi-ansible/template-org-config))
+- [x] A GIT clone of a repository with an example playbook and inventory ([template-example-project](https://github.com/tosmi-ansible/template-example-project))
+- [x] An AAP project pointing to the CaC repository for the tenant
+- [x] An AAP project pointing to the example project repository for the tenant
+- [x] A job template to trigger synchronization of AAP objects with the configuration stored in the CaC repository
+- [x] A job template using the [example project](https://github.com/tosmi-ansible/tenant1-example-project)
+- [x] A webhook configured on the tenant CaC repository to trigger updates on _git push_
+- [x] A webhook on the example project to deploy new test Virtual Machine on branch creation (see roles/onboard/tasks/example_project.yaml)
+- [x] A policy on the tenant organization to enforce nameing conventions on job templates (<id>-<tenant name>-<name of job template)
+
+The example project is a "golden" templates for tenants so they have
+an example on how to create their own automation using AAP. It also
+provides the option to deploy virtual machines for testing new
+features.
+
+There are still some manual tasks required. Those tasks are documented
+in section [Manual steps to be
+automated](#manual-steps-to-be-automated). The ultimate goal is to
+automate these as well, but this is an ongoing project.
+
+## Onboarding process overview
+
+The following diagram illustrates the onboarding process for new tenants:
+
+![image](docs/images/onboarding_flow.jpg)
+
 ## Implementation options
 
 Onboarding of tenants by the platform team is done via Configuration
@@ -86,37 +126,6 @@ playbook to deploy a virtual machine for testing new features.
 Furthermore there is
 [opa_policy.yaml](roles/onboard/tasks/opa_policy.yaml) to add a OPA
 policy to the organization.
-
-## Onboarding process and required objects
-
-Each tenant will get
-
-- [x] An organization within AAP
-- [x] A GIT clone of a repository for storing AAP Settings for the tenant as CaC ([template-org-config](https://github.com/tosmi-ansible/template-org-config))
-- [x] A GIT clone of a repository with an example playbook and inventory ([template-example-project](https://github.com/tosmi-ansible/template-example-project))
-- [x] An AAP project pointing to the CaC repository for the tenant
-- [x] An AAP project pointing to the example project repository for the tenant
-- [x] A job template to trigger synchronization of AAP objects with the configuration stored in the CaC repository
-- [x] A job template using the [example project](https://github.com/tosmi-ansible/tenant1-example-project)
-- [x] A webhook configured on the tenant CaC repository to trigger updates on _git push_
-- [x] A webhook on the example project to deploy new test Virtual Machine on branch creation (see roles/onboard/tasks/example_project.yaml)
-- [x] A policy on the tenant organization to enforce nameing conventions on job templates (<id>-<tenant name>-<name of job template)
-
-The example project is a "golden" templates for tenants so they have
-an example on how to create their own automation using AAP. It also
-provides the option to deploy virtual machines for testing new
-features.
-
-There are still some manual tasks required. Those tasks are documented
-in section [Manual steps to be
-automated](#manual-steps-to-be-automated). The ultimate goal is to
-automate these as well, but this is an ongoing project.
-
-## Onboarding process overview
-
-The following diagram illustrates the onboarding process for new tenants:
-
-![image](docs/images/onboarding_flow.jpg)
 
 ## Manual steps to be automated
 
