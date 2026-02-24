@@ -5,13 +5,13 @@ tenants to Ansible Automation Platform. A tenant is a user or a group
 of users that would like to deploy and use their automation code on
 Ansible Automation Platform (AAP).
 
-[!IMPORTANT]
-The goal is enabling tenants to work independently of the platform
-team operating Ansible Automation Platform.
+> [!NOTE]
+> The goal is enabling tenants to work independently of the platform
+> team operating Ansible Automation Platform.
 
-[!WARNING] The code in this repository is a proof of concept. It
-it's not considered production ready! You have been warned, this might
-eat your cat.
+> [!WARNING] The code in this repository is a proof of concept. It
+> it's not considered production ready! You have been warned, this might
+> eat your cat.
 
 ## Implementation options
 
@@ -86,7 +86,7 @@ automate these as well, but this is an ongoing project.
 
 The following diagram illustrates the onboarding process for new tenants:
 
-![image](docs/images/onboarding_flow.png)
+![image](docs/images/onboarding_flow.jpg)
 
 ## Manual steps to be automated
 
