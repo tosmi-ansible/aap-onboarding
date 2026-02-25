@@ -25,7 +25,7 @@ Ansible Automation Platform (AAP).
 - [Open Topics](https://github.com/tosmi-ansible/aap-onboarding?tab=readme-ov-file#open-topics)
 - [Prerequisites](https://github.com/tosmi-ansible/aap-onboarding?tab=readme-ov-file#open-topics)
 
-This was presented on the 2nd Ansible Anwendertreffen (User Group Meetup) in Austria. The slides are available [here](docs/Ansible Anwender Treffen 202602 - Slides.pdf).
+This was presented on the 2nd Ansible Anwendertreffen (User Group Meetup) in Austria. The slides are available [here](https://github.com/tosmi-ansible/aap-onboarding/blob/main/docs/Ansible%20Anwender%20Treffen%20202602%20-%20Slides.pdf).
 
 ## Onboarding process and required objects
 
