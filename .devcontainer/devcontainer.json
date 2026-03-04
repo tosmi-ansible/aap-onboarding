@@ -2,17 +2,45 @@
     "containerUser": "root",
     "customizations": {
       "vscode": {
-        "extensions": ["redhat.ansible"]
+        "extensions": [
+            "redhat.ansible",
+            "saoudrizwan.claude-dev",
+            "lucax88x.codeacejumper",
+            "jborean.ansibug"
+        ]
       }
     },
-    "image": "ghcr.io/ansible/community-ansible-dev-tools:latest",
-    "name": "ansible-dev-container-codespaces",
+    "image": "quay.io/tosmi/ansible-dev-container:v1.2",
+    "name": "ansible-dev-container-podman",
+    "mounts": [
+        "source=${localEnv:HOME}/.ssh,target=/home/runner/.ssh,type=bind",
+	"source=${localEnv:HOME}/.private/.gnupg,target=/home/runner/.gnupg,type=bind",
+        "source=${localEnv:HOME}/.ansible.cfg,target=/home/runner/.ansible.cfg,type=bind",
+        "source=${localEnv:HOME}/.authinfo.gpg,target=/home/runner/.authinfo.gpg,type=bind",
+        "source=${localEnv:HOME}/bin/vault-lab.sh,target=/home/runner/bin/vault-lab.sh,type=bind",
+        "source=${localEnv:HOME}/git/ansible/onboarding/aap-onboarding-inventory,target=/workspaces/aap-onboarding-inventory,type=bind",
+        "source=${localEnv:HOME}/git/ansible/onboarding/tenant3-org-config,target=/workspaces/tenant3-org-config,type=bind",
+        "source=${localEnv:HOME}/git/ansible/onboarding/template-org-config,target=/workspaces/template-org-config,type=bind",
+        "source=${localEnv:HOME}/git/ansible/onboarding/tenant3-example-project,target=/workspaces/tenant3-example-project,type=bind",
+        "source=${localEnv:HOME}/git/ansible/onboarding/template-example-project,target=/workspaces/template-example-project,type=bind",
+        "source=ansible-shellhistory,target=/commandhistory,type=volume"
+    ],
     "runArgs": [
-      "--privileged",
+      "--cap-add=CAP_MKNOD",
+      "--cap-add=NET_ADMIN",
+      "--cap-add=SYS_ADMIN",
+      "--cap-add=SYS_RESOURCE",
       "--device",
       "/dev/fuse",
+      "--security-opt",
+      "seccomp=unconfined",
+      "--security-opt",
+      "label=disable",
+      "--security-opt",
+      "apparmor=unconfined",
+      "--security-opt",
+      "unmask=/sys/fs/cgroup",
+      "--userns=host",
       "--hostname=ansible-dev-container"
-    ],
-    "updateRemoteUserUID": true
+    ]
   }
-  

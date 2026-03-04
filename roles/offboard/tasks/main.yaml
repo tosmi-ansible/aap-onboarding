@@ -9,121 +9,159 @@
     offboard_tenant_admin_user: "{{ offboard_tenant }}-admin"
     offboard_name: "00-{{ offboard_tenant }}-org-config"
 
-- name: Include example project removal tasks
-  ansible.builtin.include_tasks: example_project.yaml
+- name: Get the organization ID
+  ansible.builtin.set_fact:
+    __controller_organization_id:
+      "{{ lookup('ansible.platform.gateway_api', 'api/controller/v2/organizations',
+      query_params={'name': offboard_tenant },
+      host=offboard_aap_hostname, oauth_token=offboard_admin_token, verify_ssl=offboard_validate_certs)
+      }}"
 
-- name: Remove org-config job template for tenant {{ offboard_tenant }}
-  ansible.controller.job_template:
-    name: "{{ offboard_name }}"
-    state: absent
-    aap_hostname: "{{ offboard_aap_hostname }}"
-    aap_token: "{{ offboard_admin_token }}"
-    validate_certs: "{{ offboard_validate_certs }}"
-  tags:
-    - org_config
-    - org_config_job_template
+# Taken from infra.app_configuration_extended object_diff role
+- name: "Remove all job templates in organization {{ offboard_tenant }}"
+  when:
+    - __controller_organization_id.id is defined
+  block:
+    - name: "Get the API list of all Job Templates in Organization {{ offboard_tenant }}"
+      ansible.builtin.set_fact:
+        __controller_job_templates: "{{ query('ansible.platform.gateway_api', 'api/controller/v2/job_templates',
+        query_params={'organization': __controller_organization_id.id},
+        host=offboard_aap_hostname, oauth_token=offboard_admin_token, verify_ssl=offboard_validate_certs,
+        return_all=true, max_objects=query_controller_api_max_objects)
+        }}"
 
-# - name: Remove inventory source for tenant {{ offboard_tenant }}
-#   ansible.controller.inventory_source:
-#     name: "{{ offboard_name }}"
-#     inventory: "{{ offboard_name }}"
-#     state: absent
-#     aap_hostname: "{{ offboard_aap_hostname }}"
-#     aap_token: "{{ offboard_admin_token }}"
-#     validate_certs: "{{ offboard_validate_certs }}"
-#   tags:
-#     - org_config
-#     - offboard_inventory
+    - name: Removing job templates
+      ansible.controller.job_template:
+        name: "{{ job_template.name }}"
+        state: absent
+        aap_hostname: "{{ offboard_aap_hostname }}"
+        aap_token: "{{ offboard_admin_token }}"
+        validate_certs: "{{ offboard_validate_certs }}"
+      loop: "{{ __controller_job_templates }}"
+      loop_control:
+        loop_var: job_template
+        label: "{{ job_template.name }} | Tenant {{ offboard_tenant }}"
 
-- name: Remove inventory for tenant {{ offboard_tenant }}
-  ansible.controller.inventory:
-    name: "{{ offboard_name }}"
-    organization: "{{ offboard_tenant }}"
-    state: absent
-    aap_hostname: "{{ offboard_aap_hostname }}"
-    aap_token: "{{ offboard_admin_token }}"
-    validate_certs: "{{ offboard_validate_certs }}"
-  tags:
-    - org_config
-    - offboard_inventory
+- name: "Remove all inventories in organization {{ offboard_tenant }}"
+  when:
+    - __controller_organization_id.id is defined
+  block:
+    - name: "Get the API list of all Inventories in Organization {{ offboard_tenant }}"
+      ansible.builtin.set_fact:
+        __controller_inventories: "{{ query('ansible.platform.gateway_api', 'api/controller/v2/inventories',
+        query_params={'organization': __controller_organization_id.id},
+        host=offboard_aap_hostname, oauth_token=offboard_admin_token, verify_ssl=offboard_validate_certs,
+        return_all=true, max_objects=query_controller_api_max_objects)
+        }}"
 
-- name: Remove org config project for tenant {{ offboard_tenant }}
-  ansible.controller.project:
-    name: "{{ offboard_name }}"
-    state: absent
-    aap_hostname: "{{ offboard_aap_hostname }}"
-    aap_token: "{{ offboard_admin_token }}"
-    validate_certs: "{{ offboard_validate_certs }}"
-  tags:
-    - org_config
+    - name: Removing inventories
+      ansible.controller.inventory:
+        name: "{{ inventory.name }}"
+        state: absent
+        organization: "{{ __controller_organization_id.name }}"
+        aap_hostname: "{{ offboard_aap_hostname }}"
+        aap_token: "{{ offboard_admin_token }}"
+        validate_certs: "{{ offboard_validate_certs }}"
+      loop: "{{ __controller_inventories }}"
+      loop_control:
+        loop_var: inventory
+        label: "{{ inventory.name }} | Tenant {{ offboard_tenant }}"
 
-- name: Remove SCM credential
-  ansible.controller.credential:
-    name: "00-{{ offboard_tenant }}-github"
-    credential_type: "Source Control"
-    state: absent
-    aap_hostname: "{{ offboard_aap_hostname }}"
-    aap_token: "{{ offboard_admin_token }}"
-    validate_certs: "{{ offboard_validate_certs }}"
-  tags:
-    - org_config
+- name: "Remove all projects in organization {{ offboard_tenant }}"
+  when:
+    - __controller_organization_id.id is defined
+  block:
+    - name: "Get the API list of all Projects in Organization {{ offboard_tenant }}"
+      ansible.builtin.set_fact:
+        __controller_projects: "{{ query('ansible.platform.gateway_api', 'api/controller/v2/projects',
+        query_params={'organization': __controller_organization_id.id},
+        host=offboard_aap_hostname, oauth_token=offboard_admin_token, verify_ssl=offboard_validate_certs,
+        return_all=true, max_objects=query_controller_api_max_objects)
+        }}"
 
-- name: Remove AAP API Credential
-  ansible.controller.credential:
-    name: "00-{{ offboard_tenant }}-api-token"
-    credential_type: "AAP API Token"
-    state: absent
-    aap_hostname: "{{ offboard_aap_hostname }}"
-    aap_token: "{{ offboard_admin_token }}"
-    validate_certs: "{{ offboard_validate_certs }}"
+    - name: Removing projects
+      ansible.controller.project:
+        name: "{{ project.name }}"
+        state: absent
+        aap_hostname: "{{ offboard_aap_hostname }}"
+        aap_token: "{{ offboard_admin_token }}"
+        validate_certs: "{{ offboard_validate_certs }}"
+      loop: "{{ __controller_projects }}"
+      loop_control:
+        loop_var: project
+        label: "{{ project.name }} | Tenant {{ offboard_tenant }}"
 
-- name: Remove K8s Credential
-  ansible.controller.credential:
-    name: "00-{{ offboard_tenant }}-k8s-token"
-    credential_type: "AAP API Token"
-    state: absent
-    aap_hostname: "{{ offboard_aap_hostname }}"
-    aap_token: "{{ offboard_admin_token }}"
-    validate_certs: "{{ offboard_validate_certs }}"
+- name: "Remove all credentials in organization {{ offboard_tenant }}"
+  when:
+    - __controller_organization_id.id is defined
+  block:
+    - name: "Get the API list of all Credentials in Organization {{ offboard_tenant }}"
+      ansible.builtin.set_fact:
+        __controller_credentials: "{{ query('ansible.platform.gateway_api', 'api/controller/v2/credentials',
+        query_params={'organization': __controller_organization_id.id},
+        host=offboard_aap_hostname, oauth_token=offboard_admin_token, verify_ssl=offboard_validate_certs,
+        return_all=true, max_objects=query_controller_api_max_objects)
+        }}"
 
-- name: Remove vault credential
-  ansible.controller.credential:
-    name: "00-{{ offboard_tenant }}-onboarding-vault"
-    credential_type: "Vault"
-    state: absent
-    aap_hostname: "{{ offboard_aap_hostname }}"
-    aap_token: "{{ offboard_admin_token }}"
-    validate_certs: "{{ offboard_validate_certs }}"
+    - name: Removing credentials
+      ansible.controller.credential:
+        name: "{{ credential.name }}"
+        credential_type: "{{ credential.credential_type }}"
+        state: absent
+        aap_hostname: "{{ offboard_aap_hostname }}"
+        aap_token: "{{ offboard_admin_token }}"
+        validate_certs: "{{ offboard_validate_certs }}"
+      loop: "{{ __controller_credentials }}"
+      loop_control:
+        loop_var: credential
+        label: "{{ credential.name }} | Tenant {{ offboard_tenant }}"
 
-- name: Remove local user for organization "{{ offboard_tenant }}"
-  ansible.platform.user:
-    username: "{{ offboard_tenant_admin_user }}"
-    state: absent
-    aap_hostname: "{{ offboard_aap_hostname }}"
-    aap_token: "{{ offboard_admin_token }}"
-    validate_certs: "{{ offboard_validate_certs }}"
-  tags:
-    - organization
+- name: "Remove all other objects for organization {{ offboard_tenant }}"
+  when:
+    - __controller_organization_id.id is defined
+  block:
+    - name: Remove local user for organization "{{ offboard_tenant }}"
+      ansible.platform.user:
+        username: "{{ offboard_tenant_admin_user }}"
+        state: absent
+        aap_hostname: "{{ offboard_aap_hostname }}"
+        aap_token: "{{ offboard_admin_token }}"
+        validate_certs: "{{ offboard_validate_certs }}"
+      tags:
+        - organization
 
-- name: Remove organization for tenant {{ offboard_tenant }}
-  ansible.platform.organization:
-    name: "{{ offboard_tenant }}"
-    state: absent
-    aap_hostname: "{{ offboard_aap_hostname }}"
-    aap_token: "{{ offboard_admin_token }}"
-    validate_certs: "{{ offboard_validate_certs }}"
-  tags:
-    - organization
+    - name: Remove organization for tenant {{ offboard_tenant }}
+      ansible.platform.organization:
+        name: "{{ offboard_tenant }}"
+        state: absent
+        aap_hostname: "{{ offboard_aap_hostname }}"
+        aap_token: "{{ offboard_admin_token }}"
+        validate_certs: "{{ offboard_validate_certs }}"
+      tags:
+        - organization
 
-- name: Delete the org config repo for tenant {{ offboard_tenant }}
-  ansible.builtin.uri:
-    url: "https://api.github.com/repos/tosmi-ansible/{{ offboard_tenant }}-org-config"
-    method: DELETE
-    status_code:
-      - 204
-      - 404 # Already gone
-    headers:
-      Authorization: Bearer {{ github_admin_token }}
-      X-GitHub-Api-Version: "2022-11-28"
-  tags:
-    - github
+    - name: Delete the org config repository for tenant {{ offboard_tenant }}
+      ansible.builtin.uri:
+        url: "https://api.github.com/repos/tosmi-ansible/{{ offboard_tenant }}-org-config"
+        method: DELETE
+        status_code:
+          - 204
+          - 404 # Already gone
+        headers:
+          Authorization: Bearer {{ github_admin_token }}
+          X-GitHub-Api-Version: "2022-11-28"
+      tags:
+        - github
+
+    - name: Delete the example project repository for tenant {{ offboard_tenant }}
+      ansible.builtin.uri:
+        url: "https://api.github.com/repos/tosmi-ansible/{{ offboard_tenant }}-example-project"
+        method: DELETE
+        status_code:
+          - 204
+          - 404 # Already gone
+        headers:
+          Authorization: Bearer {{ github_admin_token }}
+          X-GitHub-Api-Version: "2022-11-28"
+      tags:
+        - github

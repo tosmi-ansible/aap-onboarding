@@ -15,15 +15,19 @@ collections:
     source: https://aap.apps.hub.aws.tntinfra.net/api/galaxy/content/rh-certified/
 
   - name: ansible.hub
-    version: 1.0.3
+    version: 1.0.4
     source: https://aap.apps.hub.aws.tntinfra.net/api/galaxy/content/rh-certified/
 
   - name: ansible.eda
-    version: 2.10.0
+    version: 2.11.0
     source: https://aap.apps.hub.aws.tntinfra.net/api/galaxy/content/rh-certified/
 
   - name: infra.aap_configuration
-    version: 4.2.1
+    version: 4.2.0
+    source: https://aap.apps.hub.aws.tntinfra.net/api/galaxy/content/validated/
+
+  - name: infra.aap_configuration_extended
+    version: 4.2.0
     source: https://aap.apps.hub.aws.tntinfra.net/api/galaxy/content/validated/
 
   - name: infra.aap_utilities
