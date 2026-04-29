@@ -4,5 +4,6 @@
     "files.associations": {
         "*.yaml": "ansible",
         "*.yml": "ansible"
-    }
+    },
+    "ansible.lightspeed.enabled": true
 }
