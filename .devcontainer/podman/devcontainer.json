@@ -6,7 +6,8 @@
             "redhat.ansible",
             "saoudrizwan.claude-dev",
             "lucax88x.codeacejumper",
-            "jborean.ansibug"
+            "jborean.ansibug",
+            "sst-dev.opencode"
         ]
       }
     },
