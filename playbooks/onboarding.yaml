@@ -17,5 +17,6 @@
         onboard_admin_token: "{{ aap_admin_token }}"
       loop:
         - tenant3
+        - tenant4
       loop_control:
         loop_var: tenant

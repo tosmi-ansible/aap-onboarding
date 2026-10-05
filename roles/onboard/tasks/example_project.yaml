@@ -1,7 +1,7 @@
 ---
 - name: Set required facts for creating the example project for tenant {{ onboard_tenant }}
   ansible.builtin.set_fact:
-    webhook_job_template_name: "00-{{ onboard_tenant }}-devenv-webhook"
+    webhook_job_template_name: "00-{{ onboard_tenant }}-devenv"
     example_repo_name: "{{ onboard_tenant }}-example-project"
 
 - name: Check if example project repo exists for tenant {{ onboard_tenant }}

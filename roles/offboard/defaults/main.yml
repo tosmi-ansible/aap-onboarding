@@ -1,2 +1,2 @@
 ---
-# defaults file for offboard
+query_controller_api_max_objects: 10000
